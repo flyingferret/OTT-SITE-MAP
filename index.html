@@ -134,6 +134,13 @@ var saloonIcon = L.icon({
     iconAnchor: [22, 45],
     popupAnchor: [0, -45]
 });
+
+var cpIcon = L.icon({
+    iconUrl: 'icons/cp.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
 // -------------
 
 
@@ -222,7 +229,7 @@ addNamedMarker("Bunker 1", [1262, 3430], namedLocations, bunkerIcon);
 addNamedMarker("Bunker 2", [1189, 3378], namedLocations, bunkerIcon);
 addNamedMarker("Bunker 3", [1109, 3323], namedLocations, bunkerIcon);
 addNamedMarker("Tower", [1206, 3448], namedLocations,towerIcon);
-addNamedMarker("CP", [1191, 3502], namedLocations);
+addNamedMarker("CP", [1191, 3502], namedLocations,cpIcon);
 addNamedMarker("Police Station", [1368, 3415], namedLocations,policeStationIcon);
 addNamedMarker("Jacob's Hut", [1308, 3388], namedLocations);
 addNamedMarker("Village", [1377, 3356], namedLocations);
