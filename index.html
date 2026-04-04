@@ -129,15 +129,33 @@ var subGameZones = L.layerGroup();
 
 // Helper for simple markers
 function addNamedMarker(name, coords, targetLayer, icon = null) {
-    var markerOptions = {};
 
-    if (icon) {
-        markerOptions.icon = icon;
-    }
+    var normalSize = [40, 40];
+    var hoverSize = [55, 55];
 
-    L.marker(coords, markerOptions)
+    // Clone icon for hover (bigger)
+    var hoverIcon = icon ? L.icon({
+        iconUrl: icon.options.iconUrl,
+        iconSize: hoverSize,
+        iconAnchor: [hoverSize[0] / 2, hoverSize[1]], // keep bottom aligned
+        popupAnchor: [0, -hoverSize[1]]
+    }) : null;
+
+    var marker = L.marker(coords, icon ? { icon: icon } : {})
         .bindPopup("<b>" + name + "</b><br>" + coords[0] + ", " + coords[1])
         .addTo(targetLayer);
+
+    if (icon) {
+        marker.on('mouseover', function () {
+            marker.setIcon(hoverIcon);
+        });
+
+        marker.on('mouseout', function () {
+            marker.setIcon(icon);
+        });
+    }
+
+    return marker;
 }
 //helper for zones
 function addZone(name, coords, targetLayer, options = {}) {
