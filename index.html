@@ -17,6 +17,14 @@
     font-weight: bold;
     text-shadow: 0 0 5px black;
 }
+
+.grid-label div {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 0 0 4px black, 0 0 8px black;
+    pointer-events: none;
+}
     </style>
 </head>
 <body>
@@ -301,6 +309,78 @@ addZone("Zone 5", [
 
 //end subzones
 
+//Grid Layer
+function addGridLayer(targetLayer, width, height, cols, rows) {
+    var cellWidth = width / cols;
+    var cellHeight = height / rows;
+
+    // Vertical lines
+    for (var c = 0; c <= cols; c++) {
+        var x = c * cellWidth;
+        L.polyline([
+            [0, x],
+            [height, x]
+        ], {
+            color: 'white',
+            weight: 1,
+            opacity: 0.6
+        }).addTo(targetLayer);
+    }
+
+    // Horizontal lines
+    for (var r = 0; r <= rows; r++) {
+        var y = r * cellHeight;
+        L.polyline([
+            [y, 0],
+            [y, width]
+        ], {
+            color: 'white',
+            weight: 1,
+            opacity: 0.6
+        }).addTo(targetLayer);
+    }
+
+    // Column labels: 1, 2, 3...
+    for (var c = 0; c < cols; c++) {
+        var x = (c * cellWidth) + (cellWidth / 2);
+
+        L.marker([cellHeight * 0.2, x], {
+            interactive: false,
+            icon: L.divIcon({
+                className: 'grid-label',
+                html: '<div>' + (c + 1) + '</div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            })
+        }).addTo(targetLayer);
+    }
+
+    // Row labels: A, B, C...
+    for (var r = 0; r < rows; r++) {
+        var y = (r * cellHeight) + (cellHeight / 2);
+        var letter = String.fromCharCode(65 + r);
+
+        L.marker([y, cellWidth * 0.2], {
+            interactive: false,
+            icon: L.divIcon({
+                className: 'grid-label',
+                html: '<div>' + letter + '</div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            })
+        }).addTo(targetLayer);
+    }
+}
+//-------
+var width = 8192;
+var height = 3770;
+
+var cellWidth = width / 10;
+var cellHeight = height / 12;
+
+var mapGrid = L.layerGroup();
+
+addGridLayer(mapGrid, width, height, 10, 12);
 
 
 // Add to map by default if you want
@@ -311,7 +391,8 @@ subGameZones.addTo(map);
 L.control.layers(null, {
     "Named Locations": namedLocations,
     "Site Zones": siteZones,
-	"Game Zones": subGameZones
+	"Game Zones": subGameZones,
+	"Grid": mapGrid
 }).addTo(map);
 // Build toggle button
 var buildToggle = L.control({position: 'topright'});
