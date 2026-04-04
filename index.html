@@ -310,6 +310,14 @@ addZone("Zone 5", [
 //end subzones
 
 //Grid Layer
+
+var gridBounds = {
+    top: 3728,
+    left: 2472,
+    right: 4920,
+    bottom: 344
+};
+
 function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
     var top = gridBounds.top;
     var left = gridBounds.left;
@@ -387,15 +395,7 @@ function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
     }
 }
 //-------
-var mapGrid = L.layerGroup();
-
-var gridBounds = {
-    top: 3728,
-    left: 2472,
-    right: 4920,
-    bottom: 344
-};
-
+var gameGrid = L.layerGroup();
 addSquareGridInBounds(gameGrid, gridBounds, 500);
 
 // Add to map by default if you want
