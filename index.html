@@ -128,24 +128,36 @@ var siteZones = L.layerGroup();
 var subGameZones = L.layerGroup();
 
 // Helper for simple markers
+
+function makeHoverIcon(baseIcon, scale = 1.35) {
+    var w = baseIcon.options.iconSize[0];
+    var h = baseIcon.options.iconSize[1];
+
+    var newW = Math.round(w * scale);
+    var newH = Math.round(h * scale);
+
+    return L.icon({
+        iconUrl: baseIcon.options.iconUrl,
+        iconSize: [newW, newH],
+        iconAnchor: [
+            Math.round((baseIcon.options.iconAnchor?.[0] ?? w / 2) * scale),
+            Math.round((baseIcon.options.iconAnchor?.[1] ?? h) * scale)
+        ],
+        popupAnchor: [
+            baseIcon.options.popupAnchor?.[0] ?? 0,
+            Math.round((baseIcon.options.popupAnchor?.[1] ?? -h) * scale)
+        ]
+    });
+}
+
 function addNamedMarker(name, coords, targetLayer, icon = null) {
-
-    var normalSize = [40, 40];
-    var hoverSize = [55, 55];
-
-    // Clone icon for hover (bigger)
-    var hoverIcon = icon ? L.icon({
-        iconUrl: icon.options.iconUrl,
-        iconSize: hoverSize,
-        iconAnchor: [hoverSize[0] / 2, hoverSize[1]], // keep bottom aligned
-        popupAnchor: [0, -hoverSize[1]]
-    }) : null;
-
     var marker = L.marker(coords, icon ? { icon: icon } : {})
         .bindPopup("<b>" + name + "</b><br>" + coords[0] + ", " + coords[1])
         .addTo(targetLayer);
 
     if (icon) {
+        var hoverIcon = makeHoverIcon(icon, 1.35);
+
         marker.on('mouseover', function () {
             marker.setIcon(hoverIcon);
         });
@@ -157,6 +169,7 @@ function addNamedMarker(name, coords, targetLayer, icon = null) {
 
     return marker;
 }
+
 //helper for zones
 function addZone(name, coords, targetLayer, options = {}) {
     var polygon = L.polygon(coords, {
@@ -293,6 +306,7 @@ addZone("Zone 5", [
 // Add to map by default if you want
 namedLocations.addTo(map);
 siteZones.addTo(map);
+subGameZones.addTo(map);
 
 L.control.layers(null, {
     "Named Locations": namedLocations,
