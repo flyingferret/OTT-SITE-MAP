@@ -113,6 +113,12 @@ var towerIcon = L.icon({
     iconAnchor: [22, 45],
     popupAnchor: [0, -45]
 });
+var saloonIcon = L.icon({
+    iconUrl: 'icons/Saloon.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
 // -------------
 
 
@@ -156,7 +162,7 @@ function addZone(name, coords, targetLayer, options = {}) {
 addNamedMarker("Bridge into Bunkers", [1177, 3626], namedLocations, bridgeIcon);
 addNamedMarker("FOB", [1903, 3647], namedLocations,FOBIcon);
 addNamedMarker("PVCP", [1745, 3566], namedLocations);
-addNamedMarker("Saloon", [1767, 3631], namedLocations);
+addNamedMarker("Saloon", [1767, 3631], namedLocations,saloonIcon);
 
 addNamedMarker("Dragon's Nest", [1694, 3865], namedLocations, dragonIcon);
 addNamedMarker("Caravan", [1533, 3810], namedLocations,caravanIcon);
