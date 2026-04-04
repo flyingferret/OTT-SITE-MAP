@@ -18,6 +18,11 @@
     text-shadow: 0 0 5px black;
 }
 
+.grid-label {
+    background: transparent;
+    border: none;
+}
+
 .grid-label div {
     color: white;
     font-weight: bold;
@@ -319,16 +324,18 @@ var gridBounds = {
 };
 
 function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
-    var top = gridBounds.top;
-    var left = gridBounds.left;
-    var right = gridBounds.right;
-    var bottom = gridBounds.bottom;
+    var top = Math.min(gridBounds.top, gridBounds.bottom);
+    var bottom = Math.max(gridBounds.top, gridBounds.bottom);
+    var left = Math.min(gridBounds.left, gridBounds.right);
+    var right = Math.max(gridBounds.left, gridBounds.right);
 
     var gridWidth = right - left;
     var gridHeight = bottom - top;
 
     var cols = Math.ceil(gridWidth / cellSize);
     var rows = Math.ceil(gridHeight / cellSize);
+
+    console.log("Grid bounds:", { top, bottom, left, right, gridWidth, gridHeight, cols, rows });
 
     // Vertical lines
     for (var c = 0; c <= cols; c++) {
