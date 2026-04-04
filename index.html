@@ -77,6 +77,42 @@ var dragonIcon = L.icon({
     iconAnchor: [22, 45],
     popupAnchor: [0, -45]
 });
+var fuelDumpIcon = L.icon({
+    iconUrl: 'icons/FuelDump.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
+var firingPointIcon = L.icon({
+    iconUrl: 'icons/FiringPoint.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
+var FOBIcon = L.icon({
+    iconUrl: 'icons/FOB.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
+var policeStationIcon = L.icon({
+    iconUrl: 'icons/PoliceStation.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
+var caravanIcon = L.icon({
+    iconUrl: 'icons/Caravan.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
+var towerIcon = L.icon({
+    iconUrl: 'icons/Tower.png',
+    iconSize: [45, 45],
+    iconAnchor: [22, 45],
+    popupAnchor: [0, -45]
+});
 // -------------
 
 
@@ -118,21 +154,21 @@ function addZone(name, coords, targetLayer, options = {}) {
 // Named markers
 // --------------------
 addNamedMarker("Bridge into Bunkers", [1177, 3626], namedLocations, bridgeIcon);
-addNamedMarker("FOB", [1903, 3647], namedLocations);
+addNamedMarker("FOB", [1903, 3647], namedLocations,FOBIcon);
 addNamedMarker("PVCP", [1745, 3566], namedLocations);
 addNamedMarker("Saloon", [1767, 3631], namedLocations);
 
 addNamedMarker("Dragon's Nest", [1694, 3865], namedLocations, dragonIcon);
-addNamedMarker("Caravan", [1533, 3810], namedLocations);
+addNamedMarker("Caravan", [1533, 3810], namedLocations,caravanIcon);
 addNamedMarker("Red Transit", [1623, 4088], namedLocations);
 addNamedMarker("Rick's Bunker", [1410, 3591], namedLocations);
 
-addNamedMarker("Fuel Dump", [2314, 3786], namedLocations);
+addNamedMarker("Fuel Dump", [2314, 3786], namedLocations,fuelDumpIcon);
 
 addNamedMarker("Bunker 1", [1262, 3430], namedLocations, bunkerIcon);
 addNamedMarker("Bunker 2", [1189, 3378], namedLocations, bunkerIcon);
 addNamedMarker("Bunker 3", [1109, 3323], namedLocations, bunkerIcon);
-addNamedMarker("Tower", [1206, 3448], namedLocations);
+addNamedMarker("Tower", [1206, 3448], namedLocations,towerIcon);
 addNamedMarker("CP", [1191, 3502], namedLocations);
 addNamedMarker("Police Station", [1368, 3415], namedLocations);
 addNamedMarker("Jacob's Hut", [1308, 3388], namedLocations);
