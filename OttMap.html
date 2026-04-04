@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Airsoft Site Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        body { margin: 0; }
+        #map { height: 100vh; }
+		
+	.zone-label {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 5px black;
+}
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+// Create map
+var width = 8192;
+var height = 3770;
+
+var bounds = [[0, 0], [height, width]];
+
+// Remember build mode between refreshes
+var InBuildMode = localStorage.getItem("InBuildMode") === "true";
+
+var map = L.map('map', {
+    crs: L.CRS.Simple,
+    minZoom: -2,
+    maxZoom: 2,
+    zoomSnap: 0.25
+});
+
+L.imageOverlay('OTT-Base.png', bounds).addTo(map);
+
+map.fitBounds(bounds);
+
+map.setMaxBounds([
+    [-200, -200],
+    [height + 200, width + 200]
+]);
+
+// --------------------
+// Site Features
+// --------------------
+
+// New layers
+var namedLocations = L.layerGroup();
+var siteZones = L.layerGroup();
+var subGameZones = L.layerGroup();
+
+// Helper for simple markers
+function addNamedMarker(name, coords, targetLayer) {
+    L.marker(coords)
+        .bindPopup("<b>" + name + "</b><br>" + coords[0] + ", " + coords[1])
+        .addTo(targetLayer);
+}
+//helper for zones
+function addZone(name, coords, targetLayer, options = {}) {
+    var polygon = L.polygon(coords, {
+        color: options.borderColor || '#3388ff',
+        fillColor: options.fillColor || '#3388ff',
+        weight: options.weight || 2,
+        fillOpacity: options.fillOpacity || 0.1,
+        dashArray: options.dashArray || null
+    }).addTo(targetLayer);
+
+    polygon.bindTooltip(name, {
+        permanent: true,
+        direction: 'center',
+        className: 'zone-label'
+    });
+}
+
+// --------------------
+// Named markers
+// --------------------
+addNamedMarker("Bridge into Bunkers", [1177, 3626], namedLocations);
+addNamedMarker("FOB", [1903, 3647], namedLocations);
+addNamedMarker("PVCP", [1745, 3566], namedLocations);
+addNamedMarker("Saloon", [1767, 3631], namedLocations);
+
+addNamedMarker("Dragon's Nest", [1694, 3865], namedLocations);
+addNamedMarker("Caravan", [1533, 3810], namedLocations);
+addNamedMarker("Red Transit", [1623, 4088], namedLocations);
+addNamedMarker("Rick's Bunker", [1410, 3591], namedLocations);
+
+addNamedMarker("Fuel Dump", [2314, 3786], namedLocations);
+
+addNamedMarker("Bunker 1", [1262, 3430], namedLocations);
+addNamedMarker("Bunker 2", [1189, 3378], namedLocations);
+addNamedMarker("Bunker 3", [1109, 3323], namedLocations);
+addNamedMarker("Tower", [1206, 3448], namedLocations);
+addNamedMarker("CP", [1191, 3502], namedLocations);
+addNamedMarker("Police Station", [1368, 3415], namedLocations);
+addNamedMarker("Jacob's Hut", [1308, 3388], namedLocations);
+addNamedMarker("Village", [1377, 3356], namedLocations);
+
+// --------------------
+// Zones
+// --------------------
+addZone("Safe Zone", [
+    [2607, 3908],
+    [2665, 3950],
+    [2886, 3675],
+    [2961, 3730],
+    [3004, 3644],
+    [2862, 3615]
+], siteZones,{
+    borderColor: 'green',
+    fillColor: 'green',
+    fillOpacity: 0.2
+});
+
+addZone("Woodyard Zone", [
+    [965, 3193],
+    [913, 3157],
+    [940, 2997],
+    [1096, 3116],
+    [1047, 3198]
+], siteZones,{
+    borderColor: 'orange',
+    fillColor: 'orange'
+});
+
+//SubZones
+
+const subZoneStyle = {
+    borderColor: 'white',
+    fillColor: 'white',
+    fillOpacity: 0.05,
+    weight: 2,
+    dashArray: '5,5' // gives a tactical/grid feel
+};
+
+// Zone 8
+addZone("Zone 8", [
+    [2668, 3951],[3075, 4499],[3354, 4512],[3596, 3860],
+    [3012, 3650],[2968, 3746],[2889, 3683]
+], subGameZones, subZoneStyle);
+
+// Zone 1
+addZone("Zone 1", [
+    [1907, 3650],[2587, 3922],[2914, 3492],[2046, 3278]
+], subGameZones, subZoneStyle);
+
+// Zone 2
+addZone("Zone 2", [
+    [1907, 3650],[2046, 3278],[1160, 3002],[1036, 3224]
+], subGameZones, subZoneStyle);
+
+// Zone 3
+addZone("Zone 3", [
+    [963, 3198],[566, 3534],[758, 3876],[1178, 3614],[1310, 3422]
+], subGameZones, subZoneStyle);
+
+// Zone 6
+addZone("Zone 6", [
+    [1178, 3614],[1310, 3422],[1730, 3609],[1750, 3760],
+    [1847, 3924],[1553, 4129],[1302, 3951],[1262, 3684]
+], subGameZones, subZoneStyle);
+
+// Zone 9
+addZone("Zone 9", [
+    [758, 3876],[1178, 3614],[1262, 3684],[1302, 3951],
+    [1553, 4129],[1561, 4167],[2228, 4643],[1905, 4772],
+    [1262, 4411],[710, 3929]
+], subGameZones, subZoneStyle);
+
+// Zone 7
+addZone("Zone 7", [
+    [2228, 4643],[1561, 4167],[1553, 4129],[1847, 3924],
+    [1750, 3760],[1730, 3609],[2616, 3967],[3033, 4534]
+], subGameZones, subZoneStyle);
+
+// Zone 4
+addZone("Zone 4", [
+    [963, 3198],[566, 3534],[443, 3405],[249, 3240],[470, 2903]
+], subGameZones, subZoneStyle);
+
+// Zone 5
+addZone("Zone 5", [
+    [863, 3121],[470, 2903],[567, 2707],[778, 2629],
+    [1229, 2916],[1160, 3002],[1099, 3093],[940, 2971]
+], subGameZones, subZoneStyle);
+
+//end subzones
+
+
+
+// Add to map by default if you want
+namedLocations.addTo(map);
+siteZones.addTo(map);
+
+L.control.layers(null, {
+    "Named Locations": namedLocations,
+    "Site Zones": siteZones,
+	"Game Zones": subGameZones
+}).addTo(map);
+// Build toggle button
+var buildToggle = L.control({position: 'topright'});
+
+buildToggle.onAdd = function () {
+    var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+    div.style.background = 'white';
+    div.style.padding = '5px';
+
+    div.innerHTML = '<button id="buildModeBtn">' +
+        (InBuildMode ? 'Build Mode: ON' : 'Build Mode: OFF') +
+        '</button>';
+
+    L.DomEvent.disableClickPropagation(div);
+
+    div.onclick = function () {
+        InBuildMode = !InBuildMode;
+        localStorage.setItem("InBuildMode", InBuildMode);
+        location.reload();
+    };
+
+    return div;
+};
+
+buildToggle.addTo(map);
+
+// Build tools
+if (InBuildMode) {
+    document.getElementById('map').style.cursor = 'crosshair';
+
+    var coordBox = L.control({position: 'bottomleft'});
+
+    coordBox.onAdd = function () {
+        this._div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        this._div.style.background = 'white';
+        this._div.style.padding = '5px';
+        this._div.innerHTML = "Move mouse...";
+        return this._div;
+    };
+
+    coordBox.addTo(map);
+
+    map.on('mousemove', function(e) {
+        coordBox._div.innerHTML =
+            "Y: " + Math.round(e.latlng.lat) +
+            " | X: " + Math.round(e.latlng.lng);
+    });
+
+    map.on('click', function(e) {
+        var y = Math.round(e.latlng.lat);
+        var x = Math.round(e.latlng.lng);
+        var coords = "[" + y + ", " + x + "]";
+
+        navigator.clipboard.writeText(coords).catch(() => {});
+        
+        L.marker([y, x]).addTo(map)
+            .bindPopup("Copied: " + coords)
+            .openPopup();
+
+        console.log(coords);
+    });
+}
+</script>
+
+</body>
+</html>
