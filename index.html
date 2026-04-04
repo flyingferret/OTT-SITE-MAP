@@ -378,7 +378,7 @@ function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
             interactive: false,
             icon: L.divIcon({
                 className: 'grid-label',
-                html: String(c + 1),
+                html: '<div>' String(c + 1)+ '</div>',
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             })
@@ -396,7 +396,7 @@ function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
             interactive: false,
             icon: L.divIcon({
                 className: 'grid-label',
-                html: letter,
+                html: '<div>' + letter + '</div>',
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             })
