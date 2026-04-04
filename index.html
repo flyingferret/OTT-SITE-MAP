@@ -310,16 +310,26 @@ addZone("Zone 5", [
 //end subzones
 
 //Grid Layer
-function addGridLayer(targetLayer, width, height, cols, rows) {
-    var cellWidth = width / cols;
-    var cellHeight = height / rows;
+function addSquareGridInBounds(targetLayer, gridBounds, cellSize) {
+    var top = gridBounds.top;
+    var left = gridBounds.left;
+    var right = gridBounds.right;
+    var bottom = gridBounds.bottom;
+
+    var gridWidth = right - left;
+    var gridHeight = bottom - top;
+
+    var cols = Math.ceil(gridWidth / cellSize);
+    var rows = Math.ceil(gridHeight / cellSize);
 
     // Vertical lines
     for (var c = 0; c <= cols; c++) {
-        var x = c * cellWidth;
+        var x = left + (c * cellSize);
+        if (x > right) x = right;
+
         L.polyline([
-            [0, x],
-            [height, x]
+            [top, x],
+            [bottom, x]
         ], {
             color: 'white',
             weight: 1,
@@ -329,10 +339,12 @@ function addGridLayer(targetLayer, width, height, cols, rows) {
 
     // Horizontal lines
     for (var r = 0; r <= rows; r++) {
-        var y = r * cellHeight;
+        var y = top + (r * cellSize);
+        if (y > bottom) y = bottom;
+
         L.polyline([
-            [y, 0],
-            [y, width]
+            [y, left],
+            [y, right]
         ], {
             color: 'white',
             weight: 1,
@@ -340,31 +352,34 @@ function addGridLayer(targetLayer, width, height, cols, rows) {
         }).addTo(targetLayer);
     }
 
-    // Column labels: 1, 2, 3...
+    // Column labels
     for (var c = 0; c < cols; c++) {
-        var x = (c * cellWidth) + (cellWidth / 2);
+        var x = left + (c * cellSize) + (cellSize / 2);
+        if (x > right) x = right - (cellSize / 2);
 
-        L.marker([cellHeight * 0.2, x], {
+        L.marker([top + cellSize * 0.25, x], {
             interactive: false,
             icon: L.divIcon({
                 className: 'grid-label',
-                html: '<div>' + (c + 1) + '</div>',
+                html: String(c + 1),
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             })
         }).addTo(targetLayer);
     }
 
-    // Row labels: A, B, C...
+    // Row labels
     for (var r = 0; r < rows; r++) {
-        var y = (r * cellHeight) + (cellHeight / 2);
+        var y = top + (r * cellSize) + (cellSize / 2);
+        if (y > bottom) y = bottom - (cellSize / 2);
+
         var letter = String.fromCharCode(65 + r);
 
-        L.marker([y, cellWidth * 0.2], {
+        L.marker([y, left + cellSize * 0.25], {
             interactive: false,
             icon: L.divIcon({
                 className: 'grid-label',
-                html: '<div>' + letter + '</div>',
+                html: letter,
                 iconSize: [20, 20],
                 iconAnchor: [10, 10]
             })
@@ -372,16 +387,16 @@ function addGridLayer(targetLayer, width, height, cols, rows) {
     }
 }
 //-------
-var width = 8192;
-var height = 3770;
-
-var cellWidth = width / 10;
-var cellHeight = height / 12;
-
 var mapGrid = L.layerGroup();
 
-addGridLayer(mapGrid, width, height, 10, 12);
+var gridBounds = {
+    top: 3728,
+    left: 2472,
+    right: 4920,
+    bottom: 344
+};
 
+addSquareGridInBounds(gameGrid, gridBounds, 500);
 
 // Add to map by default if you want
 namedLocations.addTo(map);
