@@ -10,12 +10,84 @@
     "icon": "fob"
   },
   {
+    "name": "PVCP",
+    "coords": [1745, 3566]
+  },
+  {
+    "name": "Saloon",
+    "coords": [1767, 3631],
+    "icon": "saloon"
+  },
+  {
+    "name": "Firing Point",
+    "coords": [1770, 4192],
+    "icon": "firingPoint"
+  },
+  {
+    "name": "Dragon's Nest",
+    "coords": [1694, 3865],
+    "icon": "dragon"
+  },
+  {
+    "name": "Caravan",
+    "coords": [1533, 3810],
+    "icon": "caravan"
+  },
+  {
+    "name": "Red Transit",
+    "coords": [1623, 4088]
+  },
+  {
+    "name": "Rick's Bunker",
+    "coords": [1410, 3591]
+  },
+  {
     "name": "Fuel Dump",
     "coords": [2314, 3786],
     "icon": "fuelDump"
   },
   {
-    "name": "PVCP",
-    "coords": [1745, 3566]
+    "name": "Bunker 1",
+    "coords": [1262, 3430],
+    "icon": "bunker"
+  },
+  {
+    "name": "Bunker 2",
+    "coords": [1189, 3378],
+    "icon": "bunker"
+  },
+  {
+    "name": "Bunker 3",
+    "coords": [1109, 3323],
+    "icon": "bunker"
+  },
+  {
+    "name": "Bunker 4",
+    "coords": [1106, 3449],
+    "icon": "bunker"
+  },
+  {
+    "name": "Tower",
+    "coords": [1206, 3448],
+    "icon": "tower"
+  },
+  {
+    "name": "CP",
+    "coords": [1191, 3502],
+    "icon": "cp"
+  },
+  {
+    "name": "Police Station",
+    "coords": [1368, 3415],
+    "icon": "policeStation"
+  },
+  {
+    "name": "Isaac's Hut",
+    "coords": [1308, 3388],
+    "icon": "isaacsHut"
+  },
+  {
+    "name": "Village",
+    "coords": [1377, 3356]
   }
 ]
