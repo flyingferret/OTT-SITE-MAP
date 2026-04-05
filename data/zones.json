@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Safe Zone",
+    "coords": [
+      [2607, 3908],
+      [2665, 3950],
+      [2886, 3675],
+      [2961, 3730],
+      [3004, 3644],
+      [2862, 3615]
+    ],
+    "style": {
+      "borderColor": "green",
+      "fillColor": "green",
+      "fillOpacity": 0.2
+    }
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "site": {
+    "name": "OTT Airsoft",
+    "image": "images/OTT-Base.png",
+    "width": 8192,
+    "height": 3770,
+    "maxBoundsPadding": 200
+  },
+  "grid": {
+    "enabledByDefault": false,
+    "cellSize": 250,
+    "bounds": {
+      "top": 3728,
+      "left": 2472,
+      "right": 4920,
+      "bottom": 344
+    }
+  },
+  "buildMode": {
+    "storageKey": "InBuildMode",
+    "enabledByDefault": false
+  }
+}

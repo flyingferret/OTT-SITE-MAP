@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Zone 1",
+    "coords": [
+      [1907, 3650],
+      [2587, 3922],
+      [2914, 3492],
+      [2046, 3278]
+    ],
+    "style": {
+      "borderColor": "white",
+      "fillColor": "white",
+      "fillOpacity": 0.05,
+      "weight": 2,
+      "dashArray": "5,5"
+    }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Bridge into Bunkers",
+    "coords": [1177, 3626],
+    "icon": "bridge"
+  },
+  {
+    "name": "FOB",
+    "coords": [1903, 3647],
+    "icon": "fob"
+  },
+  {
+    "name": "Fuel Dump",
+    "coords": [2314, 3786],
+    "icon": "fuelDump"
+  },
+  {
+    "name": "PVCP",
+    "coords": [1745, 3566]
+  }
+]
