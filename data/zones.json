@@ -14,5 +14,20 @@
       "fillColor": "green",
       "fillOpacity": 0.2
     }
+  },
+  {
+    "name": "Wood Yard",
+    "coords": [
+		[965, 3193],
+		[875, 3123],
+		[940, 2997],
+		[1096, 3116],
+		[1047, 3198]
+    ],
+    "style": {
+      "borderColor": "orange",
+      "fillColor": "orange",
+      "fillOpacity": 0.2
+    }
   }
 ]
