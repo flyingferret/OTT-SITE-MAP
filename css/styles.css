@@ -80,3 +80,14 @@ html, body {
 .popup-counter {
   font-size: 12px;
 }
+
+.game-mode-control button,
+.game-mode-control select {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+.game-mode-control button {
+  cursor: pointer;
+}

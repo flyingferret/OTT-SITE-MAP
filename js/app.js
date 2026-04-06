@@ -34,6 +34,7 @@ import { FeatureManager } from "./feature-manager.js";
 import { GridManager } from "./grid-manager.js";
 import { BuildModeManager } from "./build-mode.js";
 import { ThemeManager } from "./theme-manager.js";
+import { GameModeManager } from "./game-mode-manager.js";
 
 async function loadJson(path) {
   const response = await fetch(path);
@@ -63,7 +64,8 @@ async function main() {
 
   locations.forEach(item => featureManager.addMarker(namedLocations, item));
   zones.forEach(item => featureManager.addZone(siteZones, item));
-  subzones.forEach(item => featureManager.addZone(gameZones, item));
+  
+  // subzones.forEach(item => featureManager.addZone(gameZones, item));
 
   gridManager.addSquareGridInBounds(
     gridLayer,
@@ -96,6 +98,16 @@ async function main() {
   buildMode.addToggleControl();
   buildMode.enable();
 }
+
+const gameModeManager = new GameModeManager(mapManager, {
+  spawnRadius: 90
+});
+
+gameModeManager.init(subzones);
+
+mapManager.addLayerToMap("Game Mode - Zone States");
+mapManager.addLayerToMap("Game Mode - Spawns");
+mapManager.addLayerToMap("Game Mode - Items");
 
 main().catch(err => {
   console.error(err);
