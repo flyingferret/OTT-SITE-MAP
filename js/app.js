@@ -33,6 +33,7 @@ import { MapManager } from "./map-manager.js";
 import { FeatureManager } from "./feature-manager.js";
 import { GridManager } from "./grid-manager.js";
 import { BuildModeManager } from "./build-mode.js";
+import { ThemeManager } from "./theme-manager.js";
 
 async function loadJson(path) {
   const response = await fetch(path);
@@ -77,7 +78,14 @@ async function main() {
   if (siteData.grid.enabledByDefault) {
     mapManager.addLayerToMap("Grid");
   }
+  
+  const themeManager = new ThemeManager(
+    mapManager,
+    siteData.themes || {},
+    siteData.defaultTheme || "default"
+  );
 
+  themeManager.init();
   mapManager.addLayerControl();
 
   const buildMode = new BuildModeManager(

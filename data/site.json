@@ -6,6 +6,12 @@
     "height": 3770,
     "maxBoundsPadding": 200
   },
+  "themes": {
+    "default": "images/OTT-Base.png",
+    "wasteland": "images/OTT-Wasteland.png",
+    "night": "images/OTT-Night.png"
+  },
+  "defaultTheme": "default",
   "grid": {
     "enabledByDefault": false,
     "cellSize": 250,
