@@ -1,93 +1,180 @@
 [
   {
+    "id": "bridge-into-bunkers",
     "name": "Bridge into Bunkers",
     "coords": [1177, 3626],
-    "icon": "bridge"
+    "icon": "bridge",
+    "description": "Primary access route into the bunker area. High-risk choke point.",
+    "images": ["images/locations/bridge-into-bunkers/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "fob",
     "name": "FOB",
     "coords": [1903, 3647],
-    "icon": "fob"
+    "icon": "fob",
+    "description": "Forward Operating Base. Common objective and rally point.",
+    "images": ["images/locations/fob/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "pvcp",
     "name": "PVCP",
-    "coords": [1745, 3566]
+    "coords": [1745, 3566],
+    "description": "Vehicle checkpoint / control point.",
+    "images": ["images/locations/pvcp/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "saloon",
     "name": "Saloon",
     "coords": [1767, 3631],
-    "icon": "saloon"
+    "icon": "saloon",
+    "description": "Central building often used as an objective or defensive strongpoint.",
+    "images": ["images/locations/saloon/01.jpg"],
+    "themeText": {
+      "western": {
+        "name": "The Saloon"
+      },
+      "wasteland": {
+        "name": "Dust Bar"
+      }
+    }
   },
   {
+    "id": "firing-point",
     "name": "Firing Point",
     "coords": [1770, 4192],
-    "icon": "firingPoint"
+    "icon": "firingPoint",
+    "description": "Designated firing position overlooking key approaches.",
+    "images": ["images/locations/firing-point/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "dragons-nest",
     "name": "Dragon's Nest",
     "coords": [1694, 3865],
-    "icon": "dragonsNest"
+    "icon": "dragonsNest",
+    "description": "Elevated sniper tower with long sightlines across the field.",
+    "images": ["images/locations/dragons-nest/01.jpg"],
+    "themeText": {
+      "wasteland": {
+        "name": "Scavenger's Watch"
+      }
+    }
   },
   {
+    "id": "caravan",
     "name": "Caravan",
     "coords": [1533, 3810],
-    "icon": "caravan"
+    "icon": "caravan",
+    "description": "Small mobile structure used as cover or minor objective.",
+    "images": ["images/locations/caravan/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "red-transit",
     "name": "Red Transit",
-    "coords": [1623, 4088]
+    "coords": [1623, 4088],
+    "description": "Vehicle cover point and landmark within the play area.",
+    "images": ["images/locations/red-transit/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "ricks-bunker",
     "name": "Rick's Bunker",
-    "coords": [1410, 3591]
+    "coords": [1410, 3591],
+    "description": "Defensive bunker structure providing solid cover.",
+    "images": ["images/locations/ricks-bunker/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "fuel-dump",
     "name": "Fuel Dump",
     "coords": [2314, 3786],
-    "icon": "fuelDump"
+    "icon": "fuelDump",
+    "description": "Key objective area, often used in mission scenarios.",
+    "images": ["images/locations/fuel-dump/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "bunker-1",
     "name": "Bunker 1",
     "coords": [1262, 3430],
-    "icon": "bunker"
+    "icon": "bunker",
+    "description": "Part of the bunker network providing hard cover.",
+    "images": ["images/locations/bunker-1/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "bunker-2",
     "name": "Bunker 2",
     "coords": [1189, 3378],
-    "icon": "bunker"
+    "icon": "bunker",
+    "description": "Part of the bunker network providing hard cover.",
+    "images": ["images/locations/bunker-2/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "bunker-3",
     "name": "Bunker 3",
     "coords": [1109, 3323],
-    "icon": "bunker"
+    "icon": "bunker",
+    "description": "Part of the bunker network providing hard cover.",
+    "images": ["images/locations/bunker-3/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "bunker-4",
     "name": "Bunker 4",
     "coords": [1106, 3449],
-    "icon": "bunker"
+    "icon": "bunker",
+    "description": "Part of the bunker network providing hard cover.",
+    "images": ["images/locations/bunker-4/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "tower",
     "name": "Tower",
     "coords": [1206, 3448],
-    "icon": "tower"
+    "icon": "tower",
+    "description": "Elevated structure offering good visibility.",
+    "images": ["images/locations/tower/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "cp",
     "name": "CP",
     "coords": [1191, 3502],
-    "icon": "cp"
+    "icon": "cp",
+    "description": "Command Post or control point depending on game mode.",
+    "images": ["images/locations/cp/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "police-station",
     "name": "Police Station",
     "coords": [1368, 3415],
-    "icon": "policeStation"
+    "icon": "policeStation",
+    "description": "Urban-style structure used for close-quarters engagements.",
+    "images": ["images/locations/police-station/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "isaacs-hut",
     "name": "Isaac's Hut",
     "coords": [1308, 3388],
-    "icon": "isaacsHut"
+    "icon": "isaacsHut",
+    "description": "Small hut providing limited cover and concealment.",
+    "images": ["images/locations/isaacs-hut/01.jpg"],
+    "themeText": {}
   },
   {
+    "id": "village",
     "name": "Village",
-    "coords": [1377, 3356]
+    "coords": [1377, 3356],
+    "description": "Cluster of structures forming a key engagement area.",
+    "images": ["images/locations/village/01.jpg"],
+    "themeText": {}
   }
 ]

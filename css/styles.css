@@ -33,3 +33,50 @@ html, body {
   font-size: 14px;
   padding: 2px 4px;
 }
+
+.popup-content {
+  min-width: 220px;
+}
+
+.popup-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.popup-description {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.popup-gallery {
+  margin-bottom: 8px;
+}
+
+.popup-image {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.popup-gallery-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.popup-gallery-controls button {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.popup-counter {
+  font-size: 12px;
+}
