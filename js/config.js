@@ -52,6 +52,6 @@ export const ICON_DEFS = {
   tower: createIcon("icons/Tower.png", 50),
   saloon: createIcon("icons/Saloon.png", 50),
   cp: createIcon("icons/cp.png", 55),
-  isaacsHut: createIcon("icons/isaacs-hut.png", 50)
+  isaacsHut: createIcon("icons/IsaacsHut.png", 50)
 };
 
