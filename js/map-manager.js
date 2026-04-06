@@ -74,9 +74,7 @@ export class MapManager {
   }
 
   registerIcons(iconDefs) {
-    for (const [key, def] of Object.entries(iconDefs)) {
-      this.icons[key] = L.icon(def);
-    }
+    this.icons = iconDefs;
   }
 
   getIcon(name) {
