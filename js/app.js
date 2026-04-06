@@ -38,10 +38,17 @@ import { GameModeManager } from "./game-mode-manager.js";
 
 async function loadJson(path) {
   const response = await fetch(path);
+
   if (!response.ok) {
     throw new Error(`Failed to load ${path}`);
   }
-  return response.json();
+
+  try {
+    return await response.json();
+  } catch (err) {
+    // 🔥 Add context to the error
+    throw new Error(`Invalid JSON in ${path}: ${err.message}`);
+  }
 }
 
 async function main() {
@@ -110,8 +117,10 @@ async function main() {
 }
 
 
-
 main().catch(err => {
   console.error(err);
-  alert("Failed to load map data.");
+
+  alert(
+    `Error loading map:\n\n${err.message}\n\nCheck console for details.`
+  );
 });
