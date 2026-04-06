@@ -31,5 +31,6 @@ export const ICON_DEFS = {
   policeStation: { iconUrl: "icons/PoliceStation.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
   firingPoint: { iconUrl: "icons/FiringPoint.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
   saloon: { iconUrl: "icons/Saloon.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  tower: { iconUrl: "icons/Tower.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] }
+  tower: { iconUrl: "icons/Tower.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
+  caravan: { iconUrl: "icons/Caravan.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] }
 };
