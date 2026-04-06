@@ -34,7 +34,7 @@ export class MapManager {
     this.bounds = [[0, 0], [siteConfig.height, siteConfig.width]];
     this.layers = {};
     this.icons = {};
-	this.baseImageLayer = null;
+    this.baseImageLayer = null;
   }
 
   init() {
@@ -44,8 +44,11 @@ export class MapManager {
       maxZoom: 2,
       zoomSnap: 0.25
     });
-	
-	this.baseImageLayer = L.imageOverlay(this.siteConfig.image, this.bounds).addTo(this.map);
+
+    this.baseImageLayer = L.imageOverlay(
+      this.siteConfig.image,
+      this.bounds
+    ).addTo(this.map);
 
     this.map.fitBounds(this.bounds);
 
@@ -55,14 +58,14 @@ export class MapManager {
       [this.siteConfig.height + pad, this.siteConfig.width + pad]
     ]);
   }
-  
-  setBaseImage(imagePath) {
-  if (this.baseImageLayer) {
-    this.map.removeLayer(this.baseImageLayer);
-  }
 
-  this.baseImageLayer = L.imageOverlay(imagePath, this.bounds).addTo(this.map);
-}
+  setBaseImage(imagePath) {
+    if (this.baseImageLayer) {
+      this.map.removeLayer(this.baseImageLayer);
+    }
+
+    this.baseImageLayer = L.imageOverlay(imagePath, this.bounds).addTo(this.map);
+  }
 
   createLayer(name) {
     this.layers[name] = L.layerGroup();
