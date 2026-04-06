@@ -97,17 +97,19 @@ async function main() {
   );
   buildMode.addToggleControl();
   buildMode.enable();
+  
+  const gameModeManager = new GameModeManager(mapManager, {
+  spawnRadius: 90
+  });
+
+  gameModeManager.init(subzones);
+
+  mapManager.addLayerToMap("Game Mode - Zone States");
+  mapManager.addLayerToMap("Game Mode - Spawns");
+  mapManager.addLayerToMap("Game Mode - Items");
 }
 
-const gameModeManager = new GameModeManager(mapManager, {
-  spawnRadius: 90
-});
 
-gameModeManager.init(subzones);
-
-mapManager.addLayerToMap("Game Mode - Zone States");
-mapManager.addLayerToMap("Game Mode - Spawns");
-mapManager.addLayerToMap("Game Mode - Items");
 
 main().catch(err => {
   console.error(err);
