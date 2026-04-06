@@ -22,15 +22,15 @@
  */
 
 export const ICON_DEFS = {
-  bridge: { iconUrl: "icons/Bridge.png", iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] },
-  bunker: { iconUrl: "icons/bunker.png", iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] },
-  dragonsNest: { iconUrl: "icons/DragonsNest.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  fuelDump: { iconUrl: "icons/FuelDump.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  fob: { iconUrl: "icons/FOB.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  isaacsHut: { iconUrl: "icons/IsaacsHut.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  policeStation: { iconUrl: "icons/PoliceStation.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  firingPoint: { iconUrl: "icons/FiringPoint.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  saloon: { iconUrl: "icons/Saloon.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  tower: { iconUrl: "icons/Tower.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] },
-  caravan: { iconUrl: "icons/Caravan.png", iconSize: [45, 45], iconAnchor: [22, 45], popupAnchor: [0, -45] }
+  bridge: { iconUrl: "icons/Bridge.png", iconSize: [40, 40], iconAnchor: [22, 22], popupAnchor: [0, -40] },
+  bunker: { iconUrl: "icons/bunker.png", iconSize: [40, 40], iconAnchor: [22, 22], popupAnchor: [0, -40] },
+  dragonsNest: { iconUrl: "icons/DragonsNest.png", iconSize: [45, 45], iconAnchor: [22, 22]], popupAnchor: [0, -45] },
+  fuelDump: { iconUrl: "icons/FuelDump.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  fob: { iconUrl: "icons/FOB.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  isaacsHut: { iconUrl: "icons/IsaacsHut.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  policeStation: { iconUrl: "icons/PoliceStation.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  firingPoint: { iconUrl: "icons/FiringPoint.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  saloon: { iconUrl: "icons/Saloon.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  tower: { iconUrl: "icons/Tower.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] },
+  caravan: { iconUrl: "icons/Caravan.png", iconSize: [45, 45], iconAnchor: [22, 22], popupAnchor: [0, -45] }
 };
