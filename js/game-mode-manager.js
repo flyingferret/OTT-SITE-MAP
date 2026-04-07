@@ -484,6 +484,27 @@ export class GameModeManager {
     }
   }
 
+  setEnabled(isEnabled) {
+    this.enabled = isEnabled;
+    this.refreshMapInteraction();
+  }
+
+  setTool(tool) {
+    this.currentTool = tool;
+  }
+
+  setZoneAction(action) {
+    this.selectedZoneAction = action;
+  }
+
+  setTeam(team) {
+    this.selectedTeam = team;
+  }
+
+  setItemType(type) {
+    this.selectedItemType = type;
+  }
+
   clearAll() {
     Object.keys(this.zoneStates).forEach(zoneId => {
       this.applyZoneState(zoneId, "reset", false);

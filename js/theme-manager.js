@@ -1,3 +1,21 @@
+/**
+ * theme-manager.js
+ * ----------------
+ * Handles switching between map image themes.
+ *
+ * Purpose:
+ * - Manage the current map theme and apply the correct base image.
+ *
+ * Responsibilities:
+ * - Track available themes
+ * - Load saved theme from localStorage
+ * - Apply theme image changes to the map
+ *
+ * Notes:
+ * - UI is handled by MapUiManager
+ * - This class handles theme logic only
+ */
+
 export class ThemeManager {
   constructor(mapManager, themes = {}, defaultTheme = "default") {
     this.mapManager = mapManager;
@@ -8,12 +26,19 @@ export class ThemeManager {
 
   init() {
     const savedTheme = localStorage.getItem(this.storageKey);
+
     if (savedTheme && this.themes[savedTheme]) {
       this.currentTheme = savedTheme;
+    } else if (!this.themes[this.currentTheme]) {
+      const firstTheme = Object.keys(this.themes)[0];
+      if (firstTheme) {
+        this.currentTheme = firstTheme;
+      }
     }
 
-    this.applyTheme(this.currentTheme);
-    this.addControl();
+    if (this.currentTheme) {
+      this.applyTheme(this.currentTheme);
+    }
   }
 
   applyTheme(themeName) {
@@ -24,40 +49,11 @@ export class ThemeManager {
     this.mapManager.setBaseImage(this.themes[themeName]);
   }
 
-  addControl() {
-    const control = L.control({ position: "topright" });
+  getThemeNames() {
+    return Object.keys(this.themes || {});
+  }
 
-    control.onAdd = () => {
-      const div = L.DomUtil.create("div", "leaflet-bar leaflet-control");
-      div.style.background = "white";
-      div.style.padding = "8px";
-
-      const options = Object.keys(this.themes)
-        .map(name => {
-          const selected = name === this.currentTheme ? "selected" : "";
-          return `<option value="${name}" ${selected}>${name}</option>`;
-        })
-        .join("");
-
-      div.innerHTML = `
-        <label for="theme-select" style="font-size: 12px; display:block; margin-bottom:4px;">Theme</label>
-        <select id="theme-select">
-          ${options}
-        </select>
-      `;
-
-      L.DomEvent.disableClickPropagation(div);
-
-      setTimeout(() => {
-        const select = div.querySelector("#theme-select");
-        select.addEventListener("change", (e) => {
-          this.applyTheme(e.target.value);
-        });
-      }, 0);
-
-      return div;
-    };
-
-    control.addTo(this.mapManager.map);
+  getCurrentTheme() {
+    return this.currentTheme;
   }
 }

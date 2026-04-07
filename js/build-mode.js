@@ -12,77 +12,129 @@
  * - Allow clicking map to copy coordinates.
  * - Provide visual feedback (temporary markers).
  *
- * Why this exists:
- * - Makes it easy to add new features without guessing coordinates.
- * - Supports ongoing map development and updates.
- *
- * Key concepts:
- * - Build mode is optional and hidden from normal users.
- * - Uses browser storage to remember state.
- *
- * Future ideas:
- * - Add polygon drawing tools
- * - Export features directly to JSON
- * - Drag-and-drop marker placement
+ * Notes:
+ * - Fully supports enable/disable without page reload
  */
+
 export class BuildModeManager {
   constructor(mapManager, storageKey = "InBuildMode", defaultEnabled = false) {
     this.mapManager = mapManager;
     this.storageKey = storageKey;
-    this.enabled = localStorage.getItem(storageKey) === "true" || defaultEnabled;
+
+    const saved = localStorage.getItem(storageKey);
+    this.enabled = saved === null ? defaultEnabled : saved === "true";
+
+    this.coordBox = null;
+    this.mouseMoveHandler = null;
+    this.mapClickHandler = null;
+
+    this.markers = [];
+  }
+
+  isEnabled() {
+    return this.enabled;
+  }
+
+  setEnabled(isEnabled) {
+    if (this.enabled === isEnabled) return;
+
+    this.enabled = isEnabled;
+    localStorage.setItem(this.storageKey, this.enabled);
+
+    if (this.enabled) {
+      this.enable();
+    } else {
+      this.disable();
+    }
   }
 
   toggle() {
-    this.enabled = !this.enabled;
-    localStorage.setItem(this.storageKey, this.enabled);
-    location.reload();
-  }
-
-  addToggleControl() {
-    const control = L.control({ position: "topright" });
-
-    control.onAdd = () => {
-      const div = L.DomUtil.create("div", "leaflet-bar leaflet-control");
-      div.style.background = "white";
-      div.style.padding = "5px";
-      div.innerHTML = `<button>${this.enabled ? "Build Mode: ON" : "Build Mode: OFF"}</button>`;
-
-      L.DomEvent.disableClickPropagation(div);
-      div.onclick = () => this.toggle();
-      return div;
-    };
-
-    control.addTo(this.mapManager.map);
+    this.setEnabled(!this.enabled);
   }
 
   enable() {
     if (!this.enabled) return;
+    if (this.mouseMoveHandler || this.mapClickHandler) return;
 
-    document.getElementById("map").style.cursor = "crosshair";
+    const map = this.mapManager.map;
+    const mapEl = document.getElementById("map");
 
-    const coordBox = L.control({ position: "bottomleft" });
-    coordBox.onAdd = function () {
+    if (mapEl) {
+      mapEl.style.cursor = "crosshair";
+    }
+
+    this.coordBox = L.control({ position: "bottomleft" });
+
+    this.coordBox.onAdd = function () {
       this._div = L.DomUtil.create("div", "leaflet-bar leaflet-control");
       this._div.style.background = "white";
-      this._div.style.padding = "5px";
+      this._div.style.padding = "6px 8px";
+      this._div.style.fontSize = "12px";
       this._div.innerHTML = "Move mouse...";
       return this._div;
     };
-    coordBox.addTo(this.mapManager.map);
 
-    this.mapManager.map.on("mousemove", (e) => {
-      coordBox._div.innerHTML = `Y: ${Math.round(e.latlng.lat)} | X: ${Math.round(e.latlng.lng)}`;
-    });
+    this.coordBox.addTo(map);
 
-    this.mapManager.map.on("click", (e) => {
+    this.mouseMoveHandler = (e) => {
+      if (!this.coordBox?._div) return;
+
+      this.coordBox._div.innerHTML =
+        `Y: ${Math.round(e.latlng.lat)} | X: ${Math.round(e.latlng.lng)}`;
+    };
+
+    this.mapClickHandler = (e) => {
       const y = Math.round(e.latlng.lat);
       const x = Math.round(e.latlng.lng);
       const coords = `[${y}, ${x}]`;
 
       navigator.clipboard.writeText(coords).catch(() => {});
-      L.marker([y, x]).addTo(this.mapManager.map)
+
+      const marker = L.marker([y, x])
+        .addTo(map)
         .bindPopup(`Copied: ${coords}`)
         .openPopup();
+
+      this.markers.push(marker);
+    };
+
+    map.on("mousemove", this.mouseMoveHandler);
+    map.on("click", this.mapClickHandler);
+  }
+
+  disable() {
+    const map = this.mapManager.map;
+    const mapEl = document.getElementById("map");
+
+    if (mapEl) {
+      mapEl.style.cursor = "";
+    }
+
+    if (this.coordBox) {
+      map.removeControl(this.coordBox);
+      this.coordBox = null;
+    }
+
+    if (this.mouseMoveHandler) {
+      map.off("mousemove", this.mouseMoveHandler);
+      this.mouseMoveHandler = null;
+    }
+
+    if (this.mapClickHandler) {
+      map.off("click", this.mapClickHandler);
+      this.mapClickHandler = null;
+    }
+
+    this.markers.forEach(marker => {
+      map.removeLayer(marker);
     });
+    this.markers = [];
+  }
+
+  clearMarkers() {
+    this.markers.forEach(marker => {
+      this.mapManager.map.removeLayer(marker);
+    });
+    this.markers = [];
   }
 }

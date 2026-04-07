@@ -9,25 +9,12 @@
  * Responsibilities:
  * - Load JSON data (site, locations, zones, subzones).
  * - Create and initialise MapManager.
- * - Create feature, grid, and build mode managers.
+ * - Create feature, grid, theme, game mode, build mode, and UI managers.
  * - Populate layers with data.
  * - Apply default layer visibility.
  * - Initialise UI controls.
- *
- * Why this exists:
- * - Acts as the "glue" between all modules.
- * - Keeps startup logic in one place.
- *
- * Key concepts:
- * - Data-driven rendering (JSON → map)
- * - Modular architecture (each manager has a clear role)
- *
- * Future ideas:
- * - Add loading screen
- * - Add error handling UI
- * - Add game mode switching
  */
- 
+
 import { ICON_DEFS } from "./config.js";
 import { MapManager } from "./map-manager.js";
 import { FeatureManager } from "./feature-manager.js";
@@ -35,6 +22,7 @@ import { GridManager } from "./grid-manager.js";
 import { BuildModeManager } from "./build-mode.js";
 import { ThemeManager } from "./theme-manager.js";
 import { GameModeManager } from "./game-mode-manager.js";
+import { MapUiManager } from "./map-ui-manager.js";
 
 async function loadJson(path) {
   const response = await fetch(path);
@@ -46,7 +34,6 @@ async function loadJson(path) {
   try {
     return await response.json();
   } catch (err) {
-    // 🔥 Add context to the error
     throw new Error(`Invalid JSON in ${path}: ${err.message}`);
   }
 }
@@ -66,13 +53,10 @@ async function main() {
 
   const namedLocations = mapManager.createLayer("Named Locations");
   const siteZones = mapManager.createLayer("Site Zones");
-  const gameZones = mapManager.createLayer("Game Zones");
   const gridLayer = mapManager.createLayer("Grid");
 
   locations.forEach(item => featureManager.addMarker(namedLocations, item));
   zones.forEach(item => featureManager.addZone(siteZones, item));
-  
-  // subzones.forEach(item => featureManager.addZone(gameZones, item));
 
   gridManager.addSquareGridInBounds(
     gridLayer,
@@ -82,40 +66,43 @@ async function main() {
 
   mapManager.addLayerToMap("Named Locations");
   mapManager.addLayerToMap("Site Zones");
-  mapManager.addLayerToMap("Game Zones");
 
   if (siteData.grid.enabledByDefault) {
     mapManager.addLayerToMap("Grid");
   }
-  
+
   const themeManager = new ThemeManager(
     mapManager,
     siteData.themes || {},
     siteData.defaultTheme || "default"
   );
-
   themeManager.init();
-  mapManager.addLayerControl();
 
   const buildMode = new BuildModeManager(
     mapManager,
     siteData.buildMode.storageKey,
     siteData.buildMode.enabledByDefault
   );
-  buildMode.addToggleControl();
   buildMode.enable();
-  
-  const gameModeManager = new GameModeManager(mapManager, {
-  spawnRadius: 90
-  });
 
+  const gameModeManager = new GameModeManager(mapManager, {
+    spawnRadius: 90
+  });
   gameModeManager.init(subzones);
 
   mapManager.addLayerToMap("Game Mode - Zone States");
   mapManager.addLayerToMap("Game Mode - Spawns");
   mapManager.addLayerToMap("Game Mode - Items");
-}
 
+  mapManager.addLayerControl();
+
+  const mapUiManager = new MapUiManager(mapManager, {
+    gameModeManager,
+    themeManager,
+    buildModeManager: buildMode
+  });
+  mapUiManager.init();
+}
 
 main().catch(err => {
   console.error(err);
