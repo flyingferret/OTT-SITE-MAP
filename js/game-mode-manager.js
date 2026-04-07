@@ -1,21 +1,19 @@
 /**
  * game-mode-manager.js
  * --------------------
- * Manages live game-day overlays that are not part of the permanent map data.
+ * Mobile-first live game-day overlay manager.
  *
- * Purpose:
- * - Allow users to control temporary scenario state directly on the map.
- *
- * Responsibilities:
- * - Toggle game mode on/off
- * - Mark subzones as in bounds / out of bounds / reset
- * - Add team spawn overlays live
- * - Add temporary game items live
- * - Support undo and clear-all actions
+ * Features:
+ * - Floating action button to open/close game drawer
+ * - Bottom drawer UI for mobile
+ * - Zone state editing (in/out/reset)
+ * - Live spawn placement
+ * - Live game item placement
+ * - Undo / clear all
  *
  * Notes:
- * - Live data is currently stored in memory only
- * - Intended for game-day control, not permanent site editing
+ * - Live data is in memory only for now
+ * - Subzones must include stable `id` values in JSON
  */
 
 export class GameModeManager {
@@ -23,12 +21,15 @@ export class GameModeManager {
     this.mapManager = mapManager;
 
     this.enabled = false;
+    this.drawerOpen = false;
+
     this.currentTool = "select-zone"; // select-zone | add-spawn | add-item
     this.selectedZoneAction = "in";   // in | out | reset
     this.selectedTeam = "blue";       // blue | red | green | yellow
     this.selectedItemType = "backpack";
 
     this.spawnRadius = options.spawnRadius ?? 90;
+
     this.defaultZoneStyle = {
       color: "white",
       fillColor: "white",
@@ -68,19 +69,25 @@ export class GameModeManager {
 
     this.zonePolygons = new Map(); // zoneId -> polygon
     this.zoneStates = {};          // zoneId -> in|out|reset
-    this.spawns = [];              // live spawn data
-    this.items = [];               // live item data
-    this.history = [];             // undo stack
+    this.spawns = [];
+    this.items = [];
+    this.history = [];
 
     this.selectedZoneId = null;
 
     this._mapClickHandler = null;
-    this._zoneClickHandlersAttached = false;
+
+    this.drawerEl = null;
+    this.fabEl = null;
+    this.statusPillEl = null;
   }
 
   init(subzoneFeatures = []) {
-    this.addControl();
     this.registerZones(subzoneFeatures);
+    this.createFab();
+    this.createStatusPill();
+    this.createDrawer();
+    this.refreshUi();
   }
 
   registerZones(subzoneFeatures = []) {
@@ -110,131 +117,220 @@ export class GameModeManager {
 
         this.selectedZoneId = zone.id;
         this.applyZoneState(zone.id, this.selectedZoneAction, true);
+        this.refreshUi();
       });
     });
   }
 
-  addControl() {
-    const control = L.control({ position: "topright" });
+  createFab() {
+    const fab = document.createElement("button");
+    fab.className = "gm-fab";
+    fab.type = "button";
+    fab.setAttribute("aria-label", "Open Game Mode");
+    fab.textContent = "🎮";
 
-    control.onAdd = () => {
-      const div = L.DomUtil.create("div", "leaflet-bar leaflet-control");
-      div.classList.add("game-mode-control");
-      div.style.background = "white";
-      div.style.padding = "8px";
-      div.style.minWidth = "220px";
+    fab.addEventListener("click", () => {
+      this.drawerOpen = !this.drawerOpen;
+      this.refreshUi();
+    });
 
-      div.innerHTML = `
-        <div style="font-weight:bold; margin-bottom:8px;">Game Mode</div>
+    document.body.appendChild(fab);
+    this.fabEl = fab;
+  }
 
-        <div style="margin-bottom:8px;">
-          <button type="button" id="gm-toggle">${this.enabled ? "Disable" : "Enable"}</button>
+  createStatusPill() {
+    const pill = document.createElement("div");
+    pill.className = "gm-status-pill";
+    document.body.appendChild(pill);
+    this.statusPillEl = pill;
+  }
+
+  createDrawer() {
+    const drawer = document.createElement("div");
+    drawer.className = "gm-drawer";
+    drawer.innerHTML = `
+      <div class="gm-drawer-sheet">
+        <div class="gm-drawer-handle"></div>
+
+        <div class="gm-drawer-header">
+          <div class="gm-title-wrap">
+            <div class="gm-title">Game Mode</div>
+            <div class="gm-subtitle" id="gm-subtitle">Disabled</div>
+          </div>
+          <button type="button" class="gm-close-btn" id="gm-close-btn">✕</button>
         </div>
 
-        <div style="margin-bottom:6px; font-size:12px;">Tool</div>
-        <div style="margin-bottom:8px;">
-          <select id="gm-tool" style="width:100%;">
-            <option value="select-zone">Zone State</option>
-            <option value="add-spawn">Add Spawn</option>
-            <option value="add-item">Add Item</option>
-          </select>
+        <div class="gm-main-toggle">
+          <button type="button" id="gm-enable-btn" class="gm-primary-btn">Enable Game Mode</button>
         </div>
 
-        <div style="margin-bottom:6px; font-size:12px;">Zone Action</div>
-        <div style="margin-bottom:8px;">
-          <select id="gm-zone-action" style="width:100%;">
-            <option value="in">In Bounds</option>
-            <option value="out">Out of Bounds</option>
-            <option value="reset">Reset</option>
-          </select>
+        <div class="gm-section">
+          <div class="gm-label">Tool</div>
+          <div class="gm-segment" id="gm-tool-segment">
+            <button type="button" data-tool="select-zone">Zone</button>
+            <button type="button" data-tool="add-spawn">Spawn</button>
+            <button type="button" data-tool="add-item">Item</button>
+          </div>
         </div>
 
-        <div style="margin-bottom:6px; font-size:12px;">Spawn Team</div>
-        <div style="margin-bottom:8px;">
-          <select id="gm-team" style="width:100%;">
-            <option value="blue">Blue Team</option>
-            <option value="red">Red Team</option>
-            <option value="green">Green Team</option>
-            <option value="yellow">Yellow Team</option>
-          </select>
-        </div>
+        <div id="gm-context-panel"></div>
 
-        <div style="margin-bottom:6px; font-size:12px;">Item Type</div>
-        <div style="margin-bottom:8px;">
-          <select id="gm-item-type" style="width:100%;">
-            <option value="backpack">Backpack</option>
-            <option value="bomb">Bomb</option>
-            <option value="crate">Crate</option>
-          </select>
+        <div class="gm-section">
+          <div class="gm-actions">
+            <button type="button" id="gm-undo-btn">Undo</button>
+            <button type="button" id="gm-clear-btn">Clear All</button>
+          </div>
         </div>
+      </div>
+    `;
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-          <button type="button" id="gm-undo">Undo Last</button>
-          <button type="button" id="gm-clear">Clear All</button>
-        </div>
+    document.body.appendChild(drawer);
+    this.drawerEl = drawer;
 
-        <div id="gm-status" style="margin-top:8px; font-size:12px; color:#444;">
-          Disabled
+    drawer.querySelector("#gm-close-btn").addEventListener("click", () => {
+      this.drawerOpen = false;
+      this.refreshUi();
+    });
+
+    drawer.querySelector("#gm-enable-btn").addEventListener("click", () => {
+      this.enabled = !this.enabled;
+      this.refreshMapInteraction();
+      this.refreshUi();
+    });
+
+    drawer.querySelector("#gm-tool-segment").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-tool]");
+      if (!btn) return;
+      this.currentTool = btn.dataset.tool;
+      this.refreshMapInteraction();
+      this.refreshUi();
+    });
+
+    drawer.querySelector("#gm-undo-btn").addEventListener("click", () => {
+      this.undoLast();
+      this.refreshUi();
+    });
+
+    drawer.querySelector("#gm-clear-btn").addEventListener("click", () => {
+      this.clearAll();
+      this.refreshUi();
+    });
+  }
+
+  refreshUi() {
+    if (this.drawerEl) {
+      this.drawerEl.classList.toggle("open", this.drawerOpen);
+    }
+
+    if (this.statusPillEl) {
+      const toolLabel = this.prettyToolName(this.currentTool);
+      this.statusPillEl.textContent = this.enabled
+        ? `🎮 ON · ${toolLabel}`
+        : `🎮 OFF`;
+    }
+
+    if (!this.drawerEl) return;
+
+    const subtitle = this.drawerEl.querySelector("#gm-subtitle");
+    const enableBtn = this.drawerEl.querySelector("#gm-enable-btn");
+    const toolButtons = this.drawerEl.querySelectorAll("[data-tool]");
+    const contextPanel = this.drawerEl.querySelector("#gm-context-panel");
+
+    subtitle.textContent = this.enabled
+      ? `Enabled · ${this.prettyToolName(this.currentTool)}`
+      : "Disabled";
+
+    enableBtn.textContent = this.enabled ? "Disable Game Mode" : "Enable Game Mode";
+    enableBtn.classList.toggle("is-on", this.enabled);
+
+    toolButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.tool === this.currentTool);
+    });
+
+    contextPanel.innerHTML = this.buildContextPanelHtml();
+    this.bindContextPanelEvents(contextPanel);
+  }
+
+  buildContextPanelHtml() {
+    if (this.currentTool === "select-zone") {
+      return `
+        <div class="gm-section">
+          <div class="gm-label">Zone State</div>
+          <div class="gm-segment" id="gm-zone-state-segment">
+            <button type="button" data-zone-action="in">In Bounds</button>
+            <button type="button" data-zone-action="out">Out of Bounds</button>
+            <button type="button" data-zone-action="reset">Reset</button>
+          </div>
+          <div class="gm-helper-text">
+            Tap a subzone on the map to apply the selected state.
+          </div>
         </div>
       `;
+    }
 
-      L.DomEvent.disableClickPropagation(div);
+    if (this.currentTool === "add-spawn") {
+      return `
+        <div class="gm-section">
+          <div class="gm-label">Spawn Team</div>
+          <div class="gm-segment" id="gm-team-segment">
+            <button type="button" data-team="blue">Blue</button>
+            <button type="button" data-team="red">Red</button>
+            <button type="button" data-team="green">Green</button>
+            <button type="button" data-team="yellow">Yellow</button>
+          </div>
+          <div class="gm-helper-text">
+            Tap the map to place a spawn circle.
+          </div>
+        </div>
+      `;
+    }
 
-      setTimeout(() => {
-        const toggleBtn = div.querySelector("#gm-toggle");
-        const toolSelect = div.querySelector("#gm-tool");
-        const zoneActionSelect = div.querySelector("#gm-zone-action");
-        const teamSelect = div.querySelector("#gm-team");
-        const itemTypeSelect = div.querySelector("#gm-item-type");
-        const undoBtn = div.querySelector("#gm-undo");
-        const clearBtn = div.querySelector("#gm-clear");
-        const statusEl = div.querySelector("#gm-status");
+    if (this.currentTool === "add-item") {
+      return `
+        <div class="gm-section">
+          <div class="gm-label">Item Type</div>
+          <div class="gm-segment" id="gm-item-segment">
+            <button type="button" data-item="backpack">Backpack</button>
+            <button type="button" data-item="bomb">Bomb</button>
+            <button type="button" data-item="crate">Crate</button>
+          </div>
+          <div class="gm-helper-text">
+            Tap the map to place the selected item.
+          </div>
+        </div>
+      `;
+    }
 
-        toolSelect.value = this.currentTool;
-        zoneActionSelect.value = this.selectedZoneAction;
-        teamSelect.value = this.selectedTeam;
-        itemTypeSelect.value = this.selectedItemType;
+    return "";
+  }
 
-        const updateStatus = () => {
-          statusEl.textContent = this.enabled
-            ? `Enabled • Tool: ${this.currentTool}`
-            : "Disabled";
-          toggleBtn.textContent = this.enabled ? "Disable" : "Enable";
-        };
+  bindContextPanelEvents(contextPanel) {
+    const zoneBtns = contextPanel.querySelectorAll("[data-zone-action]");
+    zoneBtns.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.zoneAction === this.selectedZoneAction);
+      btn.addEventListener("click", () => {
+        this.selectedZoneAction = btn.dataset.zoneAction;
+        this.refreshUi();
+      });
+    });
 
-        toggleBtn.onclick = () => {
-          this.enabled = !this.enabled;
-          this.refreshMapInteraction();
-          updateStatus();
-        };
+    const teamBtns = contextPanel.querySelectorAll("[data-team]");
+    teamBtns.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.team === this.selectedTeam);
+      btn.addEventListener("click", () => {
+        this.selectedTeam = btn.dataset.team;
+        this.refreshUi();
+      });
+    });
 
-        toolSelect.onchange = (e) => {
-          this.currentTool = e.target.value;
-          updateStatus();
-        };
-
-        zoneActionSelect.onchange = (e) => {
-          this.selectedZoneAction = e.target.value;
-        };
-
-        teamSelect.onchange = (e) => {
-          this.selectedTeam = e.target.value;
-        };
-
-        itemTypeSelect.onchange = (e) => {
-          this.selectedItemType = e.target.value;
-        };
-
-        undoBtn.onclick = () => this.undoLast();
-        clearBtn.onclick = () => this.clearAll();
-
-        updateStatus();
-      }, 0);
-
-      return div;
-    };
-
-    control.addTo(this.mapManager.map);
+    const itemBtns = contextPanel.querySelectorAll("[data-item]");
+    itemBtns.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.item === this.selectedItemType);
+      btn.addEventListener("click", () => {
+        this.selectedItemType = btn.dataset.item;
+        this.refreshUi();
+      });
+    });
   }
 
   refreshMapInteraction() {
@@ -285,7 +381,7 @@ export class GameModeManager {
       radius: this.spawnRadius,
       color: style.color,
       fillColor: style.fillColor,
-      fillOpacity: 0.2,
+      fillOpacity: 0.22,
       weight: 2,
       interactive: false
     }).addTo(this.spawnLayer);
@@ -341,6 +437,15 @@ export class GameModeManager {
       type: "item-add",
       itemId: item.id
     });
+  }
+
+  prettyToolName(tool) {
+    const names = {
+      "select-zone": "Zone",
+      "add-spawn": "Spawn",
+      "add-item": "Item"
+    };
+    return names[tool] || tool;
   }
 
   prettyItemName(type) {
