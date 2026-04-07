@@ -86,7 +86,7 @@ async function main() {
   buildMode.enable();
 
   const gameModeManager = new GameModeManager(mapManager, {
-    spawnRadius: 90
+    spawnRadius: 30
   });
   gameModeManager.init(subzones);
 
